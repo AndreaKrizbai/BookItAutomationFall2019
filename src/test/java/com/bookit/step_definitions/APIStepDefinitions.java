@@ -14,6 +14,7 @@ import org.junit.Assert;
 import static org.hamcrest.Matchers.*;
 
 import java.util.List;
+import java.util.Map;
 
 import static io.restassured.RestAssured.*;
 
@@ -71,4 +72,25 @@ public class APIStepDefinitions {
         Assert.assertTrue(roomNames.containsAll(dataTable));
         MatcherAssert.assertThat(roomNames, hasItem(in(dataTable)));
     }
+
+    @When("user sends POST request to {string} with following information:")
+    public void user_sends_POST_request_to_with_following_information(String path, List<Map<String,String>> dataTable) {
+        for(Map<String, ?> user : dataTable) {
+            System.out.println("User to add :: " +user);
+            response = given().queryParams(user).contentType(contentType).auth().oauth2(token).when().post(path).prettyPeek();
+        }
+    }
+
+//    Then user deletes previously added students
+//      | first-name | last-name | email               | password | role                | campus-location | batch-number | team-name      |
+//      | Lesly      | SDET      | lesly2020@email.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
+    @Then("user deletes previously added students")
+    public void user_deletes_previously_added_students(List<Map<String, String>> dataTable) {
+        for(Map<String,String> row : dataTable){
+            int userID = APIUtilities.getUserID(row.get("email"), row.get("password"));
+            response = APIUtilities.deleteUserByID(userID);
+            response.then().statusCode(204);
+        }
+    }
+
 }
