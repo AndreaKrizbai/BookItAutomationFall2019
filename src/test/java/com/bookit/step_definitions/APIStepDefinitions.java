@@ -75,8 +75,9 @@ public class APIStepDefinitions {
 
     @When("user sends POST request to {string} with following information:")
     public void user_sends_POST_request_to_with_following_information(String path, List<Map<String,String>> dataTable) {
-        for(Map<String, ?> user : dataTable) {
+        for(Map<String, String> user : dataTable) {
             System.out.println("User to add :: " +user);
+            APIUtilities.ensureUserDoesntExist(user.get("email"), user.get("password"));
             response = given().queryParams(user).contentType(contentType).auth().oauth2(token).when().post(path).prettyPeek();
         }
     }

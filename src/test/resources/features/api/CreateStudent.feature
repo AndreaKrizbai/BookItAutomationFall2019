@@ -7,7 +7,7 @@ Feature: Create student
     And user accepts content type as "application/json"
     When user sends POST request to "/api/students/student" with following information:
       | first-name | last-name | email                    | password | role                | campus-location | batch-number | team-name      |
-      | AB      | CD  | abcd@gmail.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
+      | Lesly      | C  | a@gmail.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
     And user verifies that response status code is 403
 
   @create_student_2
@@ -16,11 +16,24 @@ Feature: Create student
     And user accepts content type as "application/json"
     When user sends POST request to "/api/students/student" with following information:
       | first-name | last-name | email                    | password | role                | campus-location | batch-number | team-name      |
-      | AB      | CD      | abcd@gmail.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
+      | Lesly      | C     | a@gmail.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
     And user verifies that response status code is 201
-    Then user deletes previously added students
+
+  @create_student_3 @ui @db
+  Scenario: 3. Create student over API and ensure that student info is correct on the UI
+    Given authorization token is provided for "teacher"
+    And user accepts content type as "application/json"
+    When user sends POST request to "/api/students/student" with following information:
       | first-name | last-name | email                    | password | role                | campus-location | batch-number | team-name      |
-      | AB      | CD      | abcd@gmail.com | 1111     | student-team-member | VA              | 15           | Online_Hackers |
+      | Lesly      | C         | a@gmail.com             | 1111    | student-team-member | VA              | 15           | Online_Hackers |
+    And user verifies that response status code is 201
+    Then user user is on the landing page
+    When user logs in with "a@gmail.com" email and "1111" password
+    And user navigates to personal page
+    Then user verifies that information displays correctly:
+      | first-name | last-name | email                    | password | role                | campus-location | batch-number | team-name      |
+      | Lesly      | C         | a@gmail.com              | 1111     | student-team-member | VA              | 15           | Online_Hackers |
+
 
 #    we can add only one student
 #  so to resolve this issue, we can delete added student at the end of the test

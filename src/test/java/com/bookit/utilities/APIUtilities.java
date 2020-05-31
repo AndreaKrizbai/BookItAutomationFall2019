@@ -158,4 +158,18 @@ public class APIUtilities {
         return response;
     }
 
+    /**
+     * Use this method before creating new user.
+     * If user exists - this method will that user
+     * @param email
+     * @param password
+     */
+    public static void ensureUserDoesntExist(String email, String password) {
+        int userID = getUserID(email, password);
+        if (userID > 0) {
+            deleteUserByID(userID);
+        }
+    }
+
+
 }
