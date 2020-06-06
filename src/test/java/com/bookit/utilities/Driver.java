@@ -9,20 +9,14 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.remote.BrowserType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
-
 import java.net.URL;
-
 public class Driver {
-
     //same for everyone
     private static final ThreadLocal<WebDriver> driverPool = new ThreadLocal<>();
-
     //so no one can create object of Driver class
     //everyone should call static getter method instead
     private Driver() {
-
     }
-
     /**
      * synchronized makes method thread safe. It ensures that only 1 thread can use it at the time.
      * <p>
@@ -31,7 +25,8 @@ public class Driver {
      * @return
      */
     public synchronized static WebDriver getDriver() {
-        String GRID_URL = "http://35.171.158.59:4444/wd/hub";
+        //String GRID_URL = "http://35.171.158.59:4444/wd/hub";
+        String GRID_URL = "http://3.236.14.239:4444/wd/hub";
         //if webdriver object doesn't exist
         //create it
         if (driverPool.get() == null) {
@@ -41,11 +36,9 @@ public class Driver {
             if (System.getProperty("browser") != null) {
                 browser = System.getProperty("browser");
             }
-
             if (System.getProperty("grid_url") != null) {
                 GRID_URL = System.getProperty("grid_url");
             }
-
             switch (browser) {
                 case "chrome":
                     WebDriverManager.chromedriver().setup();
@@ -72,7 +65,6 @@ public class Driver {
                         DesiredCapabilities desiredCapabilities = new DesiredCapabilities();
                         desiredCapabilities.setBrowserName(BrowserType.CHROME);
                         desiredCapabilities.setPlatform(Platform.ANY);
-
                         driverPool.set(new RemoteWebDriver(url, desiredCapabilities));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -105,8 +97,6 @@ public class Driver {
         }
         return driverPool.get();
     }
-
-
     public static void closeDriver() {
         if (driverPool.get() != null) {
             driverPool.get().quit();
